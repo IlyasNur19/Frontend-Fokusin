@@ -25,7 +25,7 @@ const LoginPage = () => {
   return (
     <div className="card w-full max-w-sm sm:w-96 bg-base-100 shadow-xl">
       <div className="card-body">
-        <img src="/src/assets/logo.png" className=" m-10" alt="" />
+        <img src="/logo.png" className=" m-10" alt="" />
         
         <form onSubmit={onSubmit}>
           <div className="form-control">
