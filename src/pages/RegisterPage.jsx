@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import toast from 'react-hot-toast';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -18,13 +19,11 @@ const RegisterPage = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Cek data yang akan dikirim
       console.log("Data yang dikirim:", formData);
 
       await register(formData);
       navigate("/");
     } catch (err) {
-      // Tangkap dan tampilkan pesan error dari backend
       const message = err.response?.data?.message || "Terjadi kesalahan";
       toast.error(message);
       console.error(err.response?.data);
@@ -34,7 +33,7 @@ const RegisterPage = () => {
   return (
     <div className="card w-full max-w-sm sm:w-96 bg-base-100 shadow-xl">
       <div className="card-body">
-        <h2 className="card-title justify-center text-2xl">Register</h2>
+        <img src="/logo.png" className=" m-10" alt="" />
         <form onSubmit={onSubmit}>
           <div className="form-control">
             <label className="label">

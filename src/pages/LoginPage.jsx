@@ -18,7 +18,7 @@ const LoginPage = () => {
     navigate('/');
   } catch (err) {
     const message = err.response?.data?.message || 'Terjadi kesalahan saat login';
-    toast.error(message); // Pastikan sudah menggunakan toast.error
+    toast.error(message); 
   }
 };
 
@@ -26,8 +26,6 @@ const LoginPage = () => {
     <div className="card w-full max-w-sm sm:w-96 bg-base-100 shadow-xl">
       <div className="card-body">
         <img src="/src/assets/logo.png" className=" m-10" alt="" />
-
-        {/* 2. Tampilkan pesan error di sini */}
         
         <form onSubmit={onSubmit}>
           <div className="form-control">

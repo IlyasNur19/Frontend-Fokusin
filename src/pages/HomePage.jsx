@@ -117,7 +117,7 @@ const HomePage = () => {
     try {
       const res = await axios.put(`https://backend-fokusin.vercel.app/api/todos/${id}`, updatedData);
       setTodos(todos.map(todo => todo._id === id ? res.data : todo));
-      toast.success('Tugas berhasil diperbarui!'); // <-- Tambahkan ini
+      toast.success('Tugas berhasil diperbarui!'); 
     } catch (err) {
       console.error(err);
       toast.error('Gagal memperbarui tugas.');
@@ -138,7 +138,7 @@ const HomePage = () => {
     return (
       <div className="text-center hero-content">
         <div className="max-w-md flex flex-col items-center">
-          <img src="/src/assets/logo.png" className=" min-w-1 sm:min-w-2xl" alt="" />
+          <img src="/logo.png" className=" min-w-1 sm:min-w-2xl" alt="" />
           <p className="py-6 px-3">
             Silakan login atau register untuk mulai mengelola tugas Anda.
           </p>
