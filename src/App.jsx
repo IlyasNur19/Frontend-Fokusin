@@ -13,7 +13,7 @@ function App() {
         position="top-center"
         reverseOrder={false}
       />
-      <div className="h-screen bg-base-200 w-full flex justify-center items-center" data-theme="light">
+      <div className="min-h-screen bg-base-100 w-full flex justify-center items-center" data-theme="light">
         <Navbar />
         <main className="container mx-auto p-4 pt-20">
           <div className="flex justify-center">
