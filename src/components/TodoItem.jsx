@@ -1,13 +1,14 @@
-import React from 'react';
+// src/components/TodoItem.js
+
+import React, { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { format } from 'date-fns';
-import { useState } from 'react';
 
-
-const TodoItem = ({ todo, onToggle, onDelete }) => {
+const TodoItem = ({ todo, onToggle, onDelete, onEdit }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(todo.title);
+
   const {
     attributes,
     listeners,
@@ -15,6 +16,11 @@ const TodoItem = ({ todo, onToggle, onDelete }) => {
     transform,
     transition,
   } = useSortable({ id: todo._id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
   
   const priorityBadge = (priority) => {
     switch (priority) {
@@ -28,19 +34,14 @@ const TodoItem = ({ todo, onToggle, onDelete }) => {
         return null;
     }
   };
-
-   const handleSave = () => {
+  
+  const handleSave = () => {
     if (editText.trim()) {
       onEdit(todo._id, { title: editText });
       setIsEditing(false);
     }
   };
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-  
   return (
     <div
       ref={setNodeRef}
@@ -63,19 +64,23 @@ const TodoItem = ({ todo, onToggle, onDelete }) => {
             type="text"
             value={editText}
             onChange={(e) => setEditText(e.target.value)}
-            onBlur={handleSave} // Simpan saat input kehilangan fokus
-            onKeyDown={(e) => e.key === 'Enter' && handleSave()} // Simpan saat menekan Enter
+            onBlur={handleSave}
+            onKeyDown={(e) => e.key === 'Enter' && handleSave()}
             className="input input-bordered input-sm w-full"
             autoFocus
           />
         ) : (
           <>
             <p className={`font-semibold ${todo.isCompleted ? 'line-through text-gray-400' : ''}`}
-              onClick={() => setIsEditing(true)} // Masuk mode edit saat judul diklik
+              onClick={() => setIsEditing(true)}
             >
               {todo.title}
             </p>
-            {/* ... (div untuk tanggal dan prioritas) ... */}
+            <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+              {todo.dueDate && <span>{format(new Date(todo.dueDate), 'dd MMM yyyy')}</span>}
+              {todo.dueDate && todo.priority && <span>•</span>}
+              {todo.priority && priorityBadge(todo.priority)}
+            </div>
           </>
         )}
       </div>

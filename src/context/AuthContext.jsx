@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (userData) => {
-    const response = await axios.post('http://localhost:5000/api/users/login', userData);
+    const response = await axios.post('https://backend-fokusin.vercel.app/api/users/login', userData);
     if (response.data) {
       localStorage.setItem('user', JSON.stringify(response.data));
       setUser(response.data);
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
   };
   
   const register = async (userData) => {
-    const response = await axios.post('http://localhost:5000/api/users/register', userData);
+    const response = await axios.post('https://backend-fokusin.vercel.app/api/users/register', userData);
     if (response.data) {
       localStorage.setItem('user', JSON.stringify(response.data));
       setUser(response.data);

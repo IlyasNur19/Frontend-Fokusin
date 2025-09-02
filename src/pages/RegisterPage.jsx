@@ -8,7 +8,7 @@ const RegisterPage = () => {
     email: "",
     password: "",
   });
-  const [error, setError] = useState("");
+
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -17,7 +17,6 @@ const RegisterPage = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Bersihkan error sebelumnya
     try {
       // Cek data yang akan dikirim
       console.log("Data yang dikirim:", formData);
@@ -26,20 +25,16 @@ const RegisterPage = () => {
       navigate("/");
     } catch (err) {
       // Tangkap dan tampilkan pesan error dari backend
-      const message =
-        err.response?.data?.message || "Terjadi kesalahan saat registrasi";
-      setError(message);
+      const message = err.response?.data?.message || "Terjadi kesalahan";
+      toast.error(message);
       console.error(err.response?.data);
     }
   };
 
   return (
-    <div className="card w-96 bg-base-100 shadow-xl">
+    <div className="card w-full max-w-sm sm:w-96 bg-base-100 shadow-xl">
       <div className="card-body">
         <h2 className="card-title justify-center text-2xl">Register</h2>
-        <div role="alert" className=" text-white text-sm">
-          <span>{error}</span>
-        </div>
         <form onSubmit={onSubmit}>
           <div className="form-control">
             <label className="label">

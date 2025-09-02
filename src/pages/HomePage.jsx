@@ -8,6 +8,7 @@ import TodoList from "../components/TodoList";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
+import toast from 'react-hot-toast';
 
 const HomePage = () => {
   const { user } = useContext(AuthContext);
@@ -17,13 +18,14 @@ const HomePage = () => {
   const [newTodoDueDate, setNewTodoDueDate] = useState(null);
   const [filterStatus, setFilterStatus] = useState("Semua");
   const [searchTerm, setSearchTerm] = useState("");
+  
 
   // Fetch todos from backend
   useEffect(() => {
     const fetchTodos = async () => {
       if (user) {
         try {
-          const res = await axios.get("http://localhost:5000/api/todos");
+          const res = await axios.get("https://backend-fokusin.vercel.app/api/todos");
           setTodos(res.data);
         } catch (err) {
           console.error(err);
@@ -33,49 +35,56 @@ const HomePage = () => {
     fetchTodos();
   }, [user]);
 
+  
+
   // Handle Add Todo
-  const handleAddTodo = async (e) => {
+   const handleAddTodo = async (e) => {
     e.preventDefault();
-    if (!newTodoTitle.trim()) return;
+    if (!newTodoTitle.trim()) return toast.error('Judul tidak boleh kosong!');
     try {
       const newTodoData = {
-        title: newTodoTitle,
-        priority: newTodoPriority,
-        dueDate: newTodoDueDate,
-      };
-      const res = await axios.post("http://localhost:5000/api/todos", newTodoData);
-      setTodos([...todos, res.data]);
+      title: newTodoTitle,
+      priority: newTodoPriority,
+      dueDate: newTodoDueDate,
+    };
 
-      // Reset form
-      setNewTodoTitle("");
-      setNewTodoPriority("Sedang");
+      const res = await axios.post('https://backend-fokusin.vercel.app/api/todos', newTodoData);
+      setTodos([...todos, res.data]);
+      setNewTodoTitle('');
+      setNewTodoPriority('Sedang');
       setNewTodoDueDate(null);
+      toast.success('Tugas berhasil ditambahkan!'); // <-- Tambahkan ini
     } catch (err) {
       console.error(err);
+      toast.error('Gagal menambahkan tugas.'); // <-- Tambahkan ini
     }
   };
+  
 
   // Handle Toggle Todo Completion
   const handleToggle = async (id, isCompleted) => {
     try {
-      await axios.put(`http://localhost:5000/api/todos/${id}`, { isCompleted });
-      setTodos(
-        todos.map((todo) => (todo._id === id ? { ...todo, isCompleted } : todo))
-      );
+      await axios.put(`https://backend-fokusin.vercel.app/api/todos/${id}`, { isCompleted });
+      setTodos(todos.map(todo => todo._id === id ? { ...todo, isCompleted } : todo));
+      toast.success(isCompleted ? 'Tugas ditandai selesai!' : 'Tugas dikembalikan ke aktif.'); // <-- Tambahkan ini
     } catch (err) {
       console.error(err);
+      toast.error('Gagal mengubah status tugas.');
     }
   };
 
   // Handle Delete Todo
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/todos/${id}`);
-      setTodos(todos.filter((todo) => todo._id !== id));
+      await axios.delete(`https://backend-fokusin.vercel.app/api/todos/${id}`);
+      setTodos(todos.filter(todo => todo._id !== id));
+      toast.success('Tugas berhasil dihapus!'); // <-- Tambahkan ini
     } catch (err) {
       console.error(err);
+      toast.error('Gagal menghapus tugas.');
     }
   };
+
 
   // Handle Drag and Drop
   const handleDragEnd = async (event) => {
@@ -95,7 +104,7 @@ const HomePage = () => {
         position: index,
       }));
       try {
-        await axios.put("http://localhost:5000/api/todos/reorder", {
+        await axios.put("https://backend-fokusin.vercel.app/api/todos/reorder", {
           orderedTodos: orderedTodosForApi,
         });
       } catch (err) {
@@ -106,10 +115,12 @@ const HomePage = () => {
   };
   const handleEdit = async (id, updatedData) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/todos/${id}`, updatedData);
-      setTodos(todos.map((todo) => (todo._id === id ? res.data : todo)));
+      const res = await axios.put(`https://backend-fokusin.vercel.app/api/todos/${id}`, updatedData);
+      setTodos(todos.map(todo => todo._id === id ? res.data : todo));
+      toast.success('Tugas berhasil diperbarui!'); // <-- Tambahkan ini
     } catch (err) {
       console.error(err);
+      toast.error('Gagal memperbarui tugas.');
     }
   };
 
@@ -117,7 +128,7 @@ const HomePage = () => {
     .filter((todo) => {
       if (filterStatus === "Aktif") return !todo.isCompleted;
       if (filterStatus === "Selesai") return todo.isCompleted;
-      return true; // 'Semua'
+      return true; 
     })
     .filter((todo) =>
       todo.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -126,9 +137,9 @@ const HomePage = () => {
   if (!user) {
     return (
       <div className="text-center hero-content">
-        <div className="max-w-md">
-          <h1 className="text-5xl font-bold">Selamat Datang!</h1>
-          <p className="py-6">
+        <div className="max-w-md flex flex-col items-center">
+          <img src="/src/assets/logo.png" className=" min-w-1 sm:min-w-2xl" alt="" />
+          <p className="py-6 px-3">
             Silakan login atau register untuk mulai mengelola tugas Anda.
           </p>
           <Link to="/login" className="btn btn-primary">
@@ -143,11 +154,14 @@ const HomePage = () => {
     <div className="w-full max-w-2xl">
       <h1 className="text-2xl font-bold mb-4">Halo, {user.name}!</h1>
 
-      {/* Form Tambah Todo (Sudah diupdate) */}
+      {/* ============== PANEL KONTROL BARU ============== */}
       <div className="card bg-base-100 shadow-lg mb-6">
         <div className="card-body">
+          
+          {/* --- Bagian Tambah Tugas --- */}
           <form onSubmit={handleAddTodo}>
-            <div className="flex gap-2 items-center">
+            {/* Baris input utama */}
+            <div className="flex gap-2">
               <input
                 type="text"
                 placeholder="Tambah tugas baru..."
@@ -155,79 +169,50 @@ const HomePage = () => {
                 value={newTodoTitle}
                 onChange={(e) => setNewTodoTitle(e.target.value)}
               />
-              <button type="submit" className="btn btn-primary">
-                Tambah
-              </button>
+              <button type="submit" className="btn btn-primary">Tambah</button>
             </div>
-            <div className="flex gap-4 mt-4 items-center">
-              {/* Input Prioritas */}
-              <div className="form-control">
-                <label className="label cursor-pointer gap-2">
-                  <span className="label-text">Prioritas</span>
-                  <select
-                    className="select select-bordered select-sm"
-                    value={newTodoPriority}
-                    onChange={(e) => setNewTodoPriority(e.target.value)}
-                  >
-                    <option>Rendah</option>
-                    <option>Sedang</option>
-                    <option>Tinggi</option>
-                  </select>
-                </label>
-              </div>
-              {/* Input Tanggal */}
-              <div className="form-control">
-                <DatePicker
-                  selected={newTodoDueDate}
-                  onChange={(date) => setNewTodoDueDate(date)}
-                  className="input input-bordered input-sm w-full"
-                  placeholderText="Pilih tanggal"
-                  dateFormat="dd/MM/yyyy"
-                />
-              </div>
+            {/* Baris input tambahan */}
+            <div className="flex gap-4 mt-3">
+              <select
+                className="select select-bordered select-sm w-1/2"
+                value={newTodoPriority}
+                onChange={(e) => setNewTodoPriority(e.target.value)}
+              >
+                <option disabled>Prioritas</option>
+                <option>Rendah</option>
+                <option>Sedang</option>
+                <option>Tinggi</option>
+              </select>
+              <DatePicker
+                selected={newTodoDueDate}
+                onChange={(date) => setNewTodoDueDate(date)}
+                className="input input-bordered input-sm w-1/2"
+                placeholderText="Pilih tanggal"
+                dateFormat="dd/MM/yyyy"
+              />
             </div>
           </form>
-          <div className="flex justify-between items-center mb-4 gap-4">
+
+          {/* --- Pemisah Visual --- */}
+          <div className="divider my-4"></div>
+
+          {/* --- Bagian Filter & Cari --- */}
+          <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
             <input
               type="text"
               placeholder="Cari tugas..."
-              className="input input-bordered w-full max-w-xs"
+              className="input input-bordered w-full sm:max-w-xs"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <div role="tablist" className="tabs tabs-boxed">
-              <a
-                role="tab"
-                className={`tab ${
-                  filterStatus === "Semua" ? "tab-active" : ""
-                }`}
-                onClick={() => setFilterStatus("Semua")}
-              >
-                Semua
-              </a>
-              <a
-                role="tab"
-                className={`tab ${
-                  filterStatus === "Aktif" ? "tab-active" : ""
-                }`}
-                onClick={() => setFilterStatus("Aktif")}
-              >
-                Aktif
-              </a>
-              <a
-                role="tab"
-                className={`tab ${
-                  filterStatus === "Selesai" ? "tab-active" : ""
-                }`}
-                onClick={() => setFilterStatus("Selesai")}
-              >
-                Selesai
-              </a>
+              <a role="tab" className={`tab ${filterStatus === 'Semua' ? 'tab-active' : ''}`} onClick={() => setFilterStatus('Semua')}>Semua</a>
+              <a role="tab" className={`tab ${filterStatus === 'Aktif' ? 'tab-active' : ''}`} onClick={() => setFilterStatus('Aktif')}>Aktif</a>
+              <a role="tab" className={`tab ${filterStatus === 'Selesai' ? 'tab-active' : ''}`} onClick={() => setFilterStatus('Selesai')}>Selesai</a>
             </div>
           </div>
         </div>
       </div>
-
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <TodoList
           todos={filteredTodos}

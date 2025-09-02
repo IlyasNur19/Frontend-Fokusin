@@ -4,10 +4,15 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import Navbar from './components/Navbar';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
     <Router>
+      <Toaster 
+        position="top-center"
+        reverseOrder={false}
+      />
       <div className="h-screen bg-base-200 w-full flex justify-center items-center" data-theme="light">
         <Navbar />
         <main className="container mx-auto p-4 pt-20">
