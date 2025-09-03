@@ -151,7 +151,7 @@ const HomePage = () => {
   }
 
   return (
-    <div className="w-full max-w-2xl h-screen">
+    <div className="w-full max-w-2xl">
       <h1 className="text-2xl font-bold mb-4">Halo, {user.name}!</h1>
 
       {/* ============== PANEL KONTROL BARU ============== */}
