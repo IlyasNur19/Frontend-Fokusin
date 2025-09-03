@@ -205,7 +205,7 @@ const HomePage = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <div role="tablist" className="tabs tabs-boxed">
+            <div role="tablist" className="flex">
               <a role="tab" className={`tab ${filterStatus === 'Semua' ? 'tab-active' : ''}`} onClick={() => setFilterStatus('Semua')}>Semua</a>
               <a role="tab" className={`tab ${filterStatus === 'Aktif' ? 'tab-active' : ''}`} onClick={() => setFilterStatus('Aktif')}>Aktif</a>
               <a role="tab" className={`tab ${filterStatus === 'Selesai' ? 'tab-active' : ''}`} onClick={() => setFilterStatus('Selesai')}>Selesai</a>

@@ -15,7 +15,7 @@ function App() {
       />
       <div className="flex flex-col min-h-screen bg-base-100" data-theme="light">
         <Navbar />
-        <main className="flex-grow container mx-auto p-4 pt-20">
+        <main className="flex-grow container mx-auto p-4 pt-20 sm:flex sm:justify-center sm:items-center">
           <div className="flex justify-center">
             <Routes>
               <Route path="/" element={<HomePage />} />
